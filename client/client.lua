@@ -17,87 +17,101 @@ Citizen.CreateThread(function()
     EndTextCommandSetBlipName(ItCompJob)
 end)
 
-Citizen.CreateThread(function()
-    ItCompJob = AddBlipForCoord(Config.BlipLocation3)
-    SetBlipSprite (ItCompJob, 606)
-    SetBlipDisplay(ItCompJob, 4)
-    SetBlipScale  (ItCompJob, 0.8)
-    SetBlipAsShortRange(ItCompJob, true)
-    SetBlipColour(ItCompJob, 3)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentSubstringPlayerName(Config.BlipName3)
-    EndTextCommandSetBlipName(ItCompJob)
-end)
+-- Citizen.CreateThread(function()
+--     ItCompJob = AddBlipForCoord(Config.BlipLocation3)
+--     SetBlipSprite (ItCompJob, 606)
+--     SetBlipDisplay(ItCompJob, 4)
+--     SetBlipScale  (ItCompJob, 0.8)
+--     SetBlipAsShortRange(ItCompJob, true)
+--     SetBlipColour(ItCompJob, 3)
+--     BeginTextCommandSetBlipName("STRING")
+--     AddTextComponentSubstringPlayerName(Config.BlipName3)
+--     EndTextCommandSetBlipName(ItCompJob)
+-- end)
 
-Citizen.CreateThread(function()
-    hashKey = RequestModel(GetHashKey(Config.ShopPed))
-
-
-    while not HasModelLoaded(GetHashKey(Config.ShopPed)) do
-        Wait(1)
-    end
-
-    local npc = CreatePed(4, Config.ShopHash, Config.ShopLocation, false, true)
-
-    SetEntityHeading(npc, Config.ShopHeading)
-    FreezeEntityPosition(npc, true)
-    SetEntityInvincible(npc, true)
-    SetBlockingOfNonTemporaryEvents(npc, true)
-end)
-
-Citizen.CreateThread(function()
-    hashKey = RequestModel(GetHashKey(Config.TaskPed))
+-- Citizen.CreateThread(function()
+--     hashKey = RequestModel(GetHashKey(Config.ShopPed))
 
 
-    while not HasModelLoaded(GetHashKey(Config.TaskPed)) do
-        Wait(1)
-    end
+--     while not HasModelLoaded(GetHashKey(Config.ShopPed)) do
+--         Wait(1)
+--     end
 
-    local npc = CreatePed(4, Config.TaskPedHash, Config.TaskPedLocation, false, true)
+--     local npc = CreatePed(4, Config.ShopHash, Config.ShopLocation, false, true)
+
+--     SetEntityHeading(npc, Config.ShopHeading)
+--     FreezeEntityPosition(npc, true)
+--     SetEntityInvincible(npc, true)
+--     SetBlockingOfNonTemporaryEvents(npc, true)
+-- end)
+
+-- Citizen.CreateThread(function()
+--     hashKey = RequestModel(GetHashKey(Config.TaskPed))
+
+
+--     while not HasModelLoaded(GetHashKey(Config.TaskPed)) do
+--         Wait(1)
+--     end
+
+--     local npc = CreatePed(4, Config.TaskPedHash, Config.TaskPedLocation, false, true)
     
-    SetEntityHeading(npc, Config.TaskPedHeading)
-    FreezeEntityPosition(npc, true)
-    SetEntityInvincible(npc, true)
-    SetBlockingOfNonTemporaryEvents(npc, true)
-end)
+--     SetEntityHeading(npc, Config.TaskPedHeading)
+--     FreezeEntityPosition(npc, true)
+--     SetEntityInvincible(npc, true)
+--     SetBlockingOfNonTemporaryEvents(npc, true)
+-- end)
+
+-- Citizen.CreateThread(function()
+--     exports['qb-target']:AddTargetModel(Config.ShopPed, {
+--     	options = {
+--     		{
+--     			event = '6x_itcompjob:openshop',
+--     			icon = 'far fa-clipboard',
+--     			label = Lang:t('label.shop'),
+--                 job = Config.job
+--     		}
+--     	},
+--     	distance = 2.5,
+--     })
+-- end)
 
 Citizen.CreateThread(function()
-    exports['qb-target']:AddTargetModel(Config.ShopPed, {
-    	options = {
-    		{
-    			event = '6x_itcompjob:openshop',
-    			icon = 'far fa-clipboard',
-    			label = Lang:t('label.shop'),
-                job = Config.job
-    		}
-    	},
-    	distance = 2.5,
-    })
-end)
-
-Citizen.CreateThread(function()
-    exports['qb-target']:AddTargetModel(Config.TaskPed, {
-    	options = {
-    		{
-    			event = '6x_itcompjob:takejob',
-    			icon = 'far fa-clipboard',
-    			label = Lang:t('label.reqjob'),
-                job = Config.job
-    		},
-            {
-                event = '6x_itcompjob:finishjob',
-                icon = 'far fa-clipboard',
-                label = Lang:t('label.finishjob'),
-                job = Config.job
+    exports['qb-target']:SpawnPed({
+        model = Config.TaskPed,
+        coords = Config.TaskPedLocation,
+        minusOne = true, 
+        freeze = true, 
+        invincible = true, 
+        blockevents = true,
+        target = { 
+            options = {
+                {
+                    event = '6x_itcompjob:takejob',
+                    icon = 'far fa-clipboard',
+                    label = Lang:t('label.reqjob'),
+                    job = Config.job
+                },
+                {
+                    event = '6x_itcompjob:finishjob',
+                    icon = 'far fa-clipboard',
+                    label = Lang:t('label.finishjob'),
+                    job = Config.job
+                },
+                {
+                    event = 'nh-context:startdelivery',
+                    icon = 'far fa-clipboard',
+                    label = Lang:t('label.startdelivery'),
+                    job = Config.job
+                },
+                {
+                    event = '6x_itcompjob:openshop',
+                    icon = 'far fa-clipboard',
+                    label = Lang:t('label.shop'),
+                    job = Config.job
+                }
             },
-            {
-                event = 'nh-context:startdelivery',
-                icon = 'far fa-clipboard',
-                label = Lang:t('label.startdelivery'),
-                job = Config.job
-            }
-    	},
-    	distance = 2.5,
+    	    distance = 2.5,
+        },
     })
 end)
 
@@ -251,7 +265,7 @@ RegisterNetEvent('nh-context:startdelivery', function(data)
         },
         {
            
-            header = Lang:t(Config.DeliveryItem),
+            header = Lang:t(QBCore.Shared.Items[Config.DeliveryItem]['label']),
             isMenuHeader = true
         },
         {
@@ -321,7 +335,8 @@ end)
 RegisterNetEvent('6x_itcompjob:checkmonitor')
 AddEventHandler('6x_itcompjob:checkmonitor', function()
     if checkedmon == false then
-        QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        HasItem = QBCore.Functions.HasItem('6x_toolbox')
+        -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
             if HasItem then
                 QBCore.Functions.Progressbar("pickup", Lang:t("progress.checkingpart"), 10000, false, true, {
                     disableMovement = true,
@@ -344,7 +359,7 @@ AddEventHandler('6x_itcompjob:checkmonitor', function()
             else
                 QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
             end
-        end, '6x_toolbox')
+        -- end, '6x_toolbox')
     else
         QBCore.Functions.Notify(Lang:t('notify.alreadychecked'), 'error')
     end
@@ -354,7 +369,8 @@ RegisterNetEvent('6x_itcompjob:checkgpu')
 AddEventHandler('6x_itcompjob:checkgpu', function()
     if checkedgpu == false then
         if checkedmon == true then
-            QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+            -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+            HasItem = QBCore.Functions.HasItem('6x_toolbox')
                 if HasItem then
                     QBCore.Functions.Progressbar("pickup", Lang:t("progress.checkingpart"), 10000, true, true, {
                         disableMovement = true,
@@ -377,7 +393,7 @@ AddEventHandler('6x_itcompjob:checkgpu', function()
                 else
                     QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
                 end
-            end, '6x_toolbox')
+            -- end, '6x_toolbox')
         else
             QBCore.Functions.Notify(Lang:t('notify.needtocheckmon'), 'error')
         end
@@ -391,7 +407,9 @@ AddEventHandler('6x_itcompjob:checkcpu', function()
     if checkedcpu == false then
         if checkedgpu == true then
             if checkedmon == true then
-                QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+                -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+                    
+                HasItem = QBCore.Functions.HasItem('6x_toolbox')
                     if HasItem then
                         QBCore.Functions.Progressbar("pickup", Lang:t("progress.checkingpart"), 10000, false, true, {
                             disableMovement = true,
@@ -414,7 +432,7 @@ AddEventHandler('6x_itcompjob:checkcpu', function()
                     else
                         QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
                     end
-                end, '6x_toolbox')
+                -- end, '6x_toolbox')
             else
                 QBCore.Functions.Notify(Lang:t('notify.needtocheckmon'), 'error')
             end
@@ -432,7 +450,8 @@ AddEventHandler('6x_itcompjob:checkssd', function()
         if checkedcpu == true then
             if checkedgpu == true then
                 if checkedmon == true then
-                    QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+                    -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+                    HasItem = QBCore.Functions.HasItem('6x_toolbox')
                         if HasItem then
                             QBCore.Functions.Progressbar("pickup", Lang:t("progress.checkingpart"), 10000, false, true, {
                                 disableMovement = true,
@@ -455,7 +474,7 @@ AddEventHandler('6x_itcompjob:checkssd', function()
                         else
                             QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
                         end
-                    end, '6x_toolbox')
+                    -- end, '6x_toolbox')
                 else
                     QBCore.Functions.Notify(Lang:t('notify.needtocheckmon'), 'error')
                 end
@@ -542,7 +561,8 @@ end)
 RegisterNetEvent('6x_itcompjob:replace')
 AddEventHandler('6x_itcompjob:replace', function()
     if s == 1 then
-        QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        HasItem = QBCore.Functions.HasItem('6x_monitor')
             if HasItem then
                 QBCore.Functions.Progressbar("pickup", Lang:t("progress.replacingpart"), 20000, false, true, {
                     disableMovement = true,
@@ -563,9 +583,10 @@ AddEventHandler('6x_itcompjob:replace', function()
             else
                 QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
             end
-        end, '6x_monitor')
+        -- end, '6x_monitor')
     elseif s == 2 then
-        QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        HasItem = QBCore.Functions.HasItem('6x_graphiccard')
             if HasItem then
                 QBCore.Functions.Progressbar("pickup", Lang:t("progress.replacingpart"), 20000, false, true, {
                     disableMovement = true,
@@ -586,9 +607,10 @@ AddEventHandler('6x_itcompjob:replace', function()
             else
                 QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
             end
-        end, '6x_graphiccard')
+        -- end, '6x_graphiccard')
     elseif s == 3 then
-        QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        HasItem = QBCore.Functions.HasItem('6x_cpu')
             if HasItem then
                 QBCore.Functions.Progressbar("pickup", Lang:t("progress.replacingpart"), 20000, false, true, {
                     disableMovement = true,
@@ -609,9 +631,10 @@ AddEventHandler('6x_itcompjob:replace', function()
             else
                 QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
             end
-        end, '6x_cpu')
+        -- end, '6x_cpu')
     elseif s == 4 then
-        QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        -- QBCore.Functions.TriggerCallback('QBCore:HasItem', function(HasItem)
+        HasItem = QBCore.Functions.HasItem('6x_ssd')
             if HasItem then
                 QBCore.Functions.Progressbar("pickup", Lang:t("progress.replacingpart"), 20000, false, true, {
                     disableMovement = true,
@@ -632,7 +655,7 @@ AddEventHandler('6x_itcompjob:replace', function()
             else
                 QBCore.Functions.Notify(Lang:t('notify.donthaveitem'), 'error')
             end
-        end, '6x_ssd')
+        -- end, '6x_ssd')
     end
 end)
 

@@ -56,7 +56,7 @@ AddEventHandler("6x_itcompjob:client:sellingfinish", function()
             QBCore.Functions.Notify(Lang:t("notify.notselling"), "primary")
         end
     else
-        QBCore.Functions.Notify(Lang:t("notify.notfinish"), "primary")
+        QBCore.Functions.Notify(Lang:t("notify.notfinishdelivery"), "primary")
     end
 end)
 
@@ -98,10 +98,4 @@ QBCore.Functions.SpawnVehicle(Config.DeliveryVeh, function(veh)
     TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
     SetVehicleEngineOn(veh, true, true)
     end, coords, true)
-end)
-
-RegisterCommand("try", function()
-    client = true
-    status = true
-    delivery = 0
 end)
